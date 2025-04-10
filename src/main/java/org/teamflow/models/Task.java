@@ -12,4 +12,16 @@ public class Task {
     public void pinTask() {
         this.isPinned = true;
     }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public boolean isPinned() {
+        return isPinned;
+    }
 }
