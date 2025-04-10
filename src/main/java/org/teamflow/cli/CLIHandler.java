@@ -3,7 +3,8 @@ package org.teamflow.cli;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class CLIHandler {
+public class CLIHandler
+{
     private ArrayList<String> asciiArt = new ArrayList<String>(Arrays.asList(
             "",
             "  _____                    _____ _               ",
@@ -25,5 +26,4 @@ public class CLIHandler {
             }
         }
     }
-
 }
