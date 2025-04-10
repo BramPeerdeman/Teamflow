@@ -1,28 +1,27 @@
 package org.teamflow.models;
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class Task
-{
-    private String title;
+public class Task {
+    private String content;
     private boolean isPinned;
-    private List<Message> messages;
 
-    public Task(String title)
-    {
-        this.title = title;
+    public Task(String content) {
+        this.content = content;
         this.isPinned = false;
-        this.messages = new ArrayList<>();
     }
 
-    public void pinTask()
-    {
-
+    public void pinTask() {
+        this.isPinned = true;
     }
 
-    public void addMessage(Message message)
-    {
-        this.messages.add(message);
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public boolean isPinned() {
+        return isPinned;
     }
 }
