@@ -1,4 +1,6 @@
 package org.teamflow.storage;
 
-public class StorageManager {
+public class StorageManager
+{
+
 }
