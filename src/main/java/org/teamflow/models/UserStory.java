@@ -22,7 +22,7 @@ public class UserStory {
     }
 
     // Setter voor takenLijst
-    public void setTakenLijst(ArrayList<String> takenLijst) {
+    public void setTakenLijst(ArrayList<Task> taskList) {
         this.taskList = taskList;
     }
     public void addTask(Task task){
