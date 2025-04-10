@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 public class Epic {
     private String titel;
-    private ArrayList<UserStory> userStories;
+    ArrayList<UserStory> userStories = new ArrayList<>();
 
     public Epic (String titel, ArrayList<UserStory> userStories) {
         this.titel = titel;
