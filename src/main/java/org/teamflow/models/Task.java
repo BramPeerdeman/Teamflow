@@ -13,6 +13,10 @@ public class Task {
         this.isPinned = true;
     }
 
+    public void unpinTask() {
+        this.isPinned = false;
+    }
+
     public void setContent(String content) {
         this.content = content;
     }
