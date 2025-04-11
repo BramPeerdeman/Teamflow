@@ -1,6 +1,7 @@
 package org.teamflow.cli;
 
 import org.teamflow.models.User;
+import org.teamflow.controllers.UserController;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -9,9 +10,11 @@ import java.util.Scanner;
 public class CLIHandler
 {
     private Scanner scanner;
-    private User currentUser;
+    private UserController userController;
+
     public CLIHandler () {
         scanner = new Scanner(System.in);
+        userController = new UserController();
     }
     private ArrayList<String> asciiArt = new ArrayList<String>(Arrays.asList(
             "",
@@ -35,8 +38,8 @@ public class CLIHandler
         }
         System.out.println("Wat is uw naam?");
         String username = scanner.nextLine();
-        currentUser = new User(username);
-        System.out.printf("Uw naam is %s. Klopt dit?%n", currentUser.getName());
+        userController.createUser(username);
+        System.out.printf("Uw naam is %s. Klopt dit?%n", userController.getCurrentUserName());
         mainMenu();
     }
     private void mainMenu() {
@@ -50,11 +53,8 @@ public class CLIHandler
     private void handleCommand(String comment) {
         switch (comment.toLowerCase()) {
             case "hello":
-                System.out.printf("hoi, %s%n", currentUser.getName());
+                System.out.printf("hoi, %s%n", userController.getCurrentUserName());
                 break;
         }
-    }
-    public User getCurrentUser(){
-        return currentUser;
     }
 }
