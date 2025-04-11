@@ -1,10 +1,18 @@
 package org.teamflow.cli;
 
+import org.teamflow.models.User;
+
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Scanner;
 
 public class CLIHandler
 {
+    private Scanner scanner;
+    private User currentUser;
+    public CLIHandler () {
+        scanner = new Scanner(System.in);
+    }
     private ArrayList<String> asciiArt = new ArrayList<String>(Arrays.asList(
             "",
             "  _____                    _____ _               ",
@@ -25,5 +33,28 @@ public class CLIHandler
                 Thread.currentThread().interrupt();
             }
         }
+        System.out.println("Wat is uw naam?");
+        String username = scanner.nextLine();
+        currentUser = new User(username);
+        System.out.printf("Uw naam is %s. Klopt dit?%n", currentUser.getName());
+        mainMenu();
+    }
+    private void mainMenu() {
+        while (true) {
+            System.out.print("> ");
+            String input = scanner.nextLine();
+            handleCommand(input);
+        }
+    }
+
+    private void handleCommand(String comment) {
+        switch (comment.toLowerCase()) {
+            case "hello":
+                System.out.printf("hoi, %s%n", currentUser.getName());
+                break;
+        }
+    }
+    public User getCurrentUser(){
+        return currentUser;
     }
 }
