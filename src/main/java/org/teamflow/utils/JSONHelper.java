@@ -11,6 +11,7 @@ import java.util.ArrayList;
 
 import org.teamflow.models.Task;
 import org.teamflow.models.Epic;
+import org.teamflow.models.Message;
 import org.teamflow.models.User;
 
 public class JSONHelper
@@ -18,6 +19,7 @@ public class JSONHelper
     private static final String FILE_PATH = "users.json";
     private static final String FILE_PATH2 = "tasks.json";
     private static final String FILE_PATH3 = "epics.json";
+    private static final String FILE_PATH4 = "messages.json";
     private static final Gson gson = new Gson();
 
     public static ArrayList<User> loadUsers()
@@ -45,7 +47,7 @@ public class JSONHelper
 
     public static ArrayList<Task> loadTasks()
     {
-        try (FileReader reader = new FileReader(FILE_PATH3))
+        try (FileReader reader = new FileReader(FILE_PATH2))
         {
             Type listType = new TypeToken<ArrayList<Task>>() {}.getType();
             return gson.fromJson(reader, listType);
@@ -57,7 +59,7 @@ public class JSONHelper
 
     public static void saveTasks(ArrayList<Task> tasks)
     {
-        try (FileWriter writer = new FileWriter(FILE_PATH3))
+        try (FileWriter writer = new FileWriter(FILE_PATH2))
         {
             gson.toJson(tasks, writer);
         } catch (IOException e)
@@ -69,7 +71,7 @@ public class JSONHelper
 
     public static ArrayList<Epic> loadEpics()
     {
-        try (FileReader reader = new FileReader(FILE_PATH2))
+        try (FileReader reader = new FileReader(FILE_PATH3))
         {
             Type epicListType = new TypeToken<ArrayList<Epic>>() {}.getType();
             return gson.fromJson(reader, epicListType);
@@ -81,12 +83,35 @@ public class JSONHelper
 
     public static void saveEpics(ArrayList<Epic> epics)
     {
-        try (FileWriter writer = new FileWriter(FILE_PATH2))
+        try (FileWriter writer = new FileWriter(FILE_PATH3))
         {
             gson.toJson(epics, writer);
         } catch (IOException e)
         {
             System.out.println("Fout bij het opslaan van epics: " + e.getMessage());
+        }
+    }
+
+    public static ArrayList<Message> loadMessages()
+    {
+        try (FileReader reader = new FileReader(FILE_PATH4))
+        {
+            Type epicListType = new TypeToken<ArrayList<Epic>>() {}.getType();
+            return gson.fromJson(reader, epicListType);
+        } catch (IOException e)
+        {
+            return new ArrayList<>();
+        }
+    }
+
+    public static void saveMessages(ArrayList<Message> messages)
+    {
+        try (FileWriter writer = new FileWriter(FILE_PATH4))
+        {
+            gson.toJson(messages, writer);
+        } catch (IOException e)
+        {
+            System.out.println("Fout bij het opslaan van messages: " + e.getMessage());
         }
     }
 }
