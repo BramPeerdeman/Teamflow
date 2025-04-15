@@ -9,11 +9,13 @@ import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 
+import org.teamflow.models.Epic;
 import org.teamflow.models.User;
 
 public class JSONHelper
 {
     private static final String FILE_PATH = "users.json";
+    private static final String FILE_PATH2 = "epics.json";
     private static final Gson gson = new Gson();
 
     public static ArrayList<User> loadUsers()
@@ -36,6 +38,29 @@ public class JSONHelper
         } catch (IOException e)
         {
             System.out.println("Fout bij het opslaan van gebruikers: " + e.getMessage());
+        }
+    }
+
+    public static ArrayList<Epic> loadEpics()
+    {
+        try (FileReader reader = new FileReader(FILE_PATH2))
+        {
+            Type epicListType = new TypeToken<ArrayList<Epic>>() {}.getType();
+            return gson.fromJson(reader, epicListType);
+        } catch (IOException e)
+        {
+            return new ArrayList<>();
+        }
+    }
+
+    public static void saveEpics(ArrayList<Epic> epics)
+    {
+        try (FileWriter writer = new FileWriter(FILE_PATH2))
+        {
+            gson.toJson(epics, writer);
+        } catch (IOException e)
+        {
+            System.out.println("Fout bij het opslaan van epics: " + e.getMessage());
         }
     }
 }
