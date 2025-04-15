@@ -36,10 +36,41 @@ public class CLIHandler
                 Thread.currentThread().interrupt();
             }
         }
-        System.out.println("Wat is uw naam?");
-        String username = scanner.nextLine();
-        userController.createUser(username);
-        System.out.printf("Uw naam is %s. Klopt dit?%n", userController.getCurrentUserName());
+        while (true) {
+            System.out.println("Welkom! Wil je [login] of [register]?");
+            String choice = scanner.nextLine();
+
+            System.out.println("Wat is uw naam?");
+            String username = scanner.nextLine();
+
+            boolean success;
+            if (choice.equalsIgnoreCase("register"))
+            {
+                success = userController.createUser(username);
+                if (success)
+                {
+                    System.out.printf("Gebruiker '%s' is geregistreerd!%n", username);
+                    break;
+                } else
+                {
+                    System.out.println("Deze naam is al in gebruik. Probeer een andere.");
+                }
+            } else if (choice.equalsIgnoreCase("login"))
+            {
+                success = userController.login(username);
+                if (success)
+                {
+                    System.out.printf("Ingelogd als '%s'%n", username);
+                    break;
+                } else
+                {
+                    System.out.println("Gebruiker niet gevonden. Probeer het opnieuw of registreer.");
+                }
+            } else
+            {
+                System.out.println("Ongeldige optie. Typ 'login' of 'register'.");
+            }
+        }
         mainMenu();
     }
     private void mainMenu() {
