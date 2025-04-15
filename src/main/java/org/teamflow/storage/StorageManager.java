@@ -1,5 +1,6 @@
 package org.teamflow.storage;
 
+import org.teamflow.models.Epic;
 import org.teamflow.models.User;
 import org.teamflow.utils.JSONHelper;
 
@@ -15,6 +16,16 @@ public class StorageManager
     public void saveUsers(ArrayList<User> users)
     {
         JSONHelper.saveUsers(users);
+    }
+
+    public ArrayList<Epic> loadEpics()
+    {
+        return JSONHelper.loadEpics();
+    }
+
+    public void saveEpics(ArrayList<Epic> epics)
+    {
+        JSONHelper.saveEpics(epics);
     }
 
 }
