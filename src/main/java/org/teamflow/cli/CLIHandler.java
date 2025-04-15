@@ -77,16 +77,52 @@ public class CLIHandler
     }
     private void mainMenu() {
         while (true) {
+            System.out.println("1.........Epics");
+            System.out.println("2.........UserStory");
+            System.out.println("3.........Taken");
+            System.out.println("4.........Berichten");
             System.out.print("> ");
+
             String input = scanner.nextLine();
             handleCommand(input);
         }
     }
+    private void voegEpicToeScreen() {
+        // "Wis" het scherm door meerdere lege regels te printen (simpelweg 50 newlines)
+        for (int i = 0; i < 50; i++) {
+            System.out.println();
+        }
+        // Toon het nieuwe schermheader
+        System.out.println("=== Voeg Epic Toe ===");
+
+        // Vraag de gebruiker om de naam van de nieuwe Epic in te voeren.
+        System.out.printf("Voer de naam in voor de nieuwe Epic, %s: ", userController.getCurrentUserName());
+        String epicNaam = scanner.nextLine().trim();
+
+        if (epicNaam.isEmpty()) {
+            System.out.println("Geen naam ingevoerd. Terug naar hoofmenu.");
+        } else {
+            // Maak een nieuwe Epic aan en voeg deze toe aan je lijst van epics.
+            Epic nieuweEpic = new Epic(epicNaam);
+            epics.add(nieuweEpic);
+            System.out.println("Epic toegevoegd: " + epicNaam);
+        }
+
+        // Optioneel: Wacht op een ENTER om terug te keren naar het hoofdmenu.
+        System.out.println("Druk ENTER om terug te keren naar het hoofdmenu.");
+        scanner.nextLine();  // Wacht op input
+
+        // Roep opnieuw het hoofdmenu aan (of loop terug in je hoofdmenu-loop)
+        mainMenu();  // Als dit jouw hoofdmenu-methode is; pas aan naar jouw structuur
+    }
+
 
     private void handleCommand(String comment) {
         switch (comment.toLowerCase()) {
-            case "hello":
-                System.out.printf("hoi, %s%n", userController.getCurrentUserName());
+            case "1":
+                System.out.printf("Voeg een epic toe, %s%n", userController.getCurrentUserName());
+
+
                 break;
             case "list epics":
                 listEpics();
