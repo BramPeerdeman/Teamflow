@@ -1,6 +1,7 @@
 package org.teamflow.storage;
 
 import org.teamflow.models.Epic;
+import org.teamflow.models.Task;
 import org.teamflow.models.User;
 import org.teamflow.utils.JSONHelper;
 
@@ -27,5 +28,16 @@ public class StorageManager
     {
         JSONHelper.saveEpics(epics);
     }
+
+    public ArrayList<Task> loadTasks()
+    {
+        return JSONHelper.loadTasks();
+    }
+
+    public void saveTasks(ArrayList<Task> tasks)
+    {
+        JSONHelper.saveTasks(tasks);
+    }
+
 
 }
