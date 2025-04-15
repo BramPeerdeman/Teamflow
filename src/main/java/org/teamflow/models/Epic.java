@@ -3,12 +3,22 @@ package org.teamflow.models;
 import java.util.ArrayList;
 
 public class Epic {
+    private int id;
     private String titel;
     ArrayList<UserStory> userStories = new ArrayList<>();
 
-    public Epic (String titel, ArrayList<UserStory> userStories) {
+    public Epic (int id, String titel, ArrayList<UserStory> userStories) {
+        this.id = id;
         this.titel = titel;
         this.userStories = userStories;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public int getId() {
+        return id;
     }
 
     public void setTitel(String titel) {
