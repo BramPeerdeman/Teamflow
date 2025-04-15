@@ -1,5 +1,6 @@
 package org.teamflow.cli;
 
+import org.teamflow.models.Epic;
 import org.teamflow.models.User;
 import org.teamflow.controllers.UserController;
 
@@ -11,6 +12,7 @@ public class CLIHandler
 {
     private Scanner scanner;
     private UserController userController;
+    private ArrayList<Epic> epics = new ArrayList<>();
 
     public CLIHandler () {
         scanner = new Scanner(System.in);
@@ -55,6 +57,21 @@ public class CLIHandler
             case "hello":
                 System.out.printf("hoi, %s%n", userController.getCurrentUserName());
                 break;
+            case "list epics":
+                listEpics();
+                break;
+        }
+    }
+
+    private void listEpics() {
+        if (epics.isEmpty()) {
+            System.out.println("leeg");
+        } else {
+            System.out.println("epics:");
+            for (int i = 0; i < epics.size(); i++) {
+                Epic epic = epics.get(i);
+                System.out.printf("%d. %s%n", 1 + i, epic.getTitel());
+            }
         }
     }
 }
