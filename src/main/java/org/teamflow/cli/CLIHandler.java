@@ -2,9 +2,10 @@ package org.teamflow.cli;
 
 import org.teamflow.controllers.EpicController;
 import org.teamflow.controllers.MessageController;
+import org.teamflow.controllers.TaskController;
 import org.teamflow.models.Epic;
-import org.teamflow.models.User;
 import org.teamflow.controllers.UserController;
+import org.teamflow.models.Task;
 import org.teamflow.models.UserStory;
 
 import java.util.ArrayList;
@@ -16,6 +17,7 @@ public class CLIHandler
     private Scanner scanner;
     private EpicController epicController;
     private UserController userController;
+    private TaskController taskController;
     private MessageController messageController;
     private ArrayList<Epic> epics = new ArrayList<>();
 
@@ -47,10 +49,10 @@ public class CLIHandler
         }
         while (true) {
             System.out.println("Welkom! Wil je [login] of [register]?");
-            String choice = scanner.nextLine();
+            String choice = scanner.nextLine().trim();
 
             System.out.println("Wat is uw naam?");
-            String username = scanner.nextLine();
+            String username = scanner.nextLine().trim();
 
             boolean success;
             if (choice.equalsIgnoreCase("register"))
@@ -124,6 +126,9 @@ public class CLIHandler
                 case "2":
                     userStoryMenu();
                     break;
+                case "3" :
+                    taskMenu();
+                    break;
                 default:
                     System.out.println("Onbekende optie.");
             }
@@ -161,6 +166,40 @@ public class CLIHandler
         System.out.println("\nDruk ENTER om terug te keren naar het hoofdmenu.");
         scanner.nextLine();
         // mainMenu blijft draaien, dus je returnt automatisch weer naar het hoofdscherm
+    }
+
+    private void taskMenu() {
+        clearConsole();
+        System.out.print("=== Voeg Taak Toe ===");
+        System.out.print("Voer de titel in voor de nieuwe taak: ");
+        String title = scanner.nextLine().trim();
+        System.out.print("Voer de beschrijving van de taak in:");
+        String content = scanner.nextLine().trim();
+
+        if (title.isEmpty()) {
+            System.out.println("Titel mag niet leeg zijn. Terug naar hoofdmenu.");
+        } else if (content.isEmpty()) {
+            System.out.println("Beschrijving is leeg, wilt u doorgaan zonder content? [Ja/Nee]");
+            String antwoord = scanner.nextLine().trim();
+            if (antwoord.equalsIgnoreCase("nee")) {
+                System.out.println("Voer de beschrijving van de taak in:");
+                content = scanner.nextLine().trim();
+            }
+        } else {
+            // Haal de actieve us uit de controller
+            UserStory current = UserStoryController.getCurrentUserStory();
+            if (current == null) {
+                System.out.println("Je moet eerst een User Story aanmaken of selecteren.");
+            } else {
+
+                taskController.createTask(title, content, userController.getCurrentUser().getId());
+
+                userStoryController.saveUserStory();
+
+                System.out.println("Taak toegevoegd onder User Story '"
+                        + current.getTitel() + "': " + title);
+            }
+        }
     }
 
     private void handleCommand(String comment) {

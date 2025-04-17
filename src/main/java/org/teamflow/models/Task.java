@@ -3,13 +3,15 @@ package org.teamflow.models;
 public class Task
 {
     private int id;
+    private String title;
     private String content;
     private boolean isPinned;
     private int assignedUserId;
 
-    public Task(int id, String content, int assignedUserId)
+    public Task(int id, String title, String content, int assignedUserId)
     {
         this.id = id;
+        this.title = title;
         this.content = content;
         this.assignedUserId = assignedUserId;
         this.isPinned = false;
@@ -20,6 +22,10 @@ public class Task
     public int getId()
     {
         return id;
+    }
+
+    public String getTitle() {
+        return title;
     }
 
     public String getContent()
@@ -40,6 +46,10 @@ public class Task
     public void setId(int id)
     {
         this.id = id;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public void setContent(String content)

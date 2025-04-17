@@ -14,9 +14,9 @@ public class TaskController {
         tasks = storageManager.loadTasks();
     }
 
-    public Task createTask(String content, int userId) {
+    public Task createTask(String title, String content, int userId) {
         int nextId = generateNextId();
-        Task task = new Task(nextId, content, userId);
+        Task task = new Task(nextId, title, content, userId);
         tasks.add(task);
         storageManager.saveTasks(tasks);
         return task;
