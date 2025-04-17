@@ -112,6 +112,27 @@ public class CLIHandler
     }
     private void epicMenu() {
         clearConsole();
+        while (true) {
+            System.out.println("1. Voeg Epic toe");
+            System.out.println("2. Laat Epics zien");
+            System.out.print("> ");
+
+            String choice = scanner.nextLine().trim();
+            switch (choice) {
+                case "1":
+                    voegEpicToe();
+                    break;
+                case "2":
+                    listEpics();
+                    break;
+                default:
+                    System.out.println("Onbekende optie.");
+            }
+
+        }
+    }
+
+    private void voegEpicToe() {
         System.out.println("=== Voeg Epic Toe ===");
         System.out.print("Naam Epic: ");
         String name = scanner.nextLine().trim();
@@ -209,14 +230,15 @@ public class CLIHandler
     }
 
     private void listEpics() {
-        if (epics.isEmpty()) {
+        if (epicController.getEpics().isEmpty()) {
             System.out.println("leeg");
         } else {
             System.out.println("epics:");
-            for (int i = 0; i < epics.size(); i++) {
-                Epic epic = epics.get(i);
+            for (int i = 0; i < epicController.getEpics().size(); i++) {
+                Epic epic = epicController.getEpics().get(i);
                 System.out.printf("%d. %s%n", 1 + i, epic.getTitel());
             }
         }
+        System.out.println();
     }
 }

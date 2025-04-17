@@ -71,4 +71,8 @@ public class EpicController {
     public void saveEpics() {
         storageManager.saveEpics(epics);
     }
+
+    public ArrayList<Epic> getEpics() {
+        return storageManager.loadEpics();
+    }
 }
