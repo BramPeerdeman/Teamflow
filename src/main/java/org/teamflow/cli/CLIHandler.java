@@ -2,6 +2,7 @@ package org.teamflow.cli;
 
 import org.teamflow.controllers.EpicController;
 import org.teamflow.controllers.MessageController;
+import org.teamflow.controllers.UserStoryController;
 import org.teamflow.models.Epic;
 import org.teamflow.models.User;
 import org.teamflow.controllers.UserController;
@@ -16,14 +17,15 @@ public class CLIHandler
     private Scanner scanner;
     private EpicController epicController;
     private UserController userController;
+    private UserStoryController userStoryController;
     private MessageController messageController;
     private ArrayList<Epic> epics = new ArrayList<>();
 
     public CLIHandler () {
         scanner = new Scanner(System.in);
         userController = new UserController();
-
         epicController = EpicController.getInstance();
+        userStoryController = UserStoryController.getInstance();
     }
     private ArrayList<String> asciiArt = new ArrayList<String>(Arrays.asList(
             "",
@@ -178,8 +180,15 @@ public class CLIHandler
                 System.out.println("Je moet eerst een Epic aanmaken of selecteren (optie 1).");
             } else {
 
-                UserStory us = new UserStory(titel);
-                current.voegUserStoryToe(us);
+                boolean success = userStoryController.createUserStory(titel);
+                if (success) {
+                    epicController.saveEpics();
+
+                    System.out.println("User Story toegevoegd onder Epic '"
+                            + current.getTitel() + "': " + titel);
+                } else {
+                    System.out.println("UserStory '" + titel + "' bestaat al.");
+                }
 
 
                 epicController.saveEpics();
