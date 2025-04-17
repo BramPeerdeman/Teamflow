@@ -1,9 +1,6 @@
 package org.teamflow.storage;
 
-import org.teamflow.models.Epic;
-import org.teamflow.models.Task;
-import org.teamflow.models.Message;
-import org.teamflow.models.User;
+import org.teamflow.models.*;
 import org.teamflow.utils.JSONHelper;
 
 import java.util.ArrayList;
@@ -50,5 +47,13 @@ public class StorageManager
         JSONHelper.saveTasks(tasks);
     }
 
+    public ArrayList<UserStory> loadUserStories()
+    {
+        return JSONHelper.loadUserStories();
+    }
 
+    public void saveUserStories(ArrayList<UserStory> userStories)
+    {
+        JSONHelper.saveUserStories(userStories);
+    }
 }

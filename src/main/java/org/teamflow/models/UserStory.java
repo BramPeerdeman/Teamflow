@@ -4,10 +4,13 @@ import java.util.ArrayList;
 
 public class UserStory {
     private String titel;
-    ArrayList<Task> taskList= new ArrayList<>();
+    private int id;
+    ArrayList<Task> taskList = new ArrayList<>();
 
-    public UserStory(String titel) {
+    public UserStory(String titel, int id, ArrayList<Task> taken) {
         this.titel = titel;
+        this.id = id;
+        this.taskList = taken;
     }
 
 
@@ -36,4 +39,11 @@ public class UserStory {
         taskList.remove(task);
     }
 
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public int getId() {
+        return id;
+    }
 }
