@@ -71,16 +71,29 @@ public class UserController {
         return currentUser != null ? currentUser.getName() : null;
     }
 
-    public void setScrumMasterFlag(String username, boolean isScrumMaster) {
+    public boolean setScrumMasterFlag(String username, boolean isScrumMaster) {
         ArrayList<User> users = JSONHelper.loadUsers();
+
+        if (isScrumMaster) {
+            for (User user : users) {
+                if (Boolean.TRUE.equals(user.getIsScrumMaster()) && !user.getName().equals(username)) {
+                    System.out.println("Er is al een Scrum Master: " + user.getName());
+                    return false; // niet toegestaan
+                }
+            }
+        }
+
         for (User user : users) {
             if (user.getName().equals(username)) {
                 user.setIsScrumMaster(isScrumMaster);
                 JSONHelper.saveUsers(users);
-                break;
+                return true;
             }
         }
+
+        return false; // gebruiker niet gevonden
     }
+
 
 }
 

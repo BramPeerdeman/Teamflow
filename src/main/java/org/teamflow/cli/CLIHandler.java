@@ -67,21 +67,44 @@ public class CLIHandler
             } else if (choice.equalsIgnoreCase("login")) {
                 success = userController.login(username);
                 if (success) {
-                    System.out.println("Ben jij de Scrum Master? (ja/nee)");
-                    String answer = scanner.nextLine();
-                    boolean isScrumMaster = answer.equalsIgnoreCase("ja");
-                    userController.setScrumMasterFlag(username, isScrumMaster);
+                    while (true) {
+                        System.out.println("Ben jij de Scrum Master? (ja/nee)");
+                        String answer = scanner.nextLine().trim().toLowerCase();
 
-                    System.out.printf("Ingelogd als '%s'%n", username);
+                        if (answer.equals("ja")) {
+                            boolean set = userController.setScrumMasterFlag(username, true);
+                            if (set) {
+                                System.out.printf("Ingelogd als '%s' (Scrum Master)%n", username);
+                                break;
+                            } else {
+                                System.out.println("Wil je als gewone gebruiker verder? (ja/nee)");
+                                String fallback = scanner.nextLine().trim().toLowerCase();
+                                if (fallback.equals("ja")) {
+                                    userController.setScrumMasterFlag(username, false);
+                                    System.out.printf("Ingelogd als '%s'%n", username);
+                                    break;
+                                } else {
+                                    System.out.println("Oké, dan stoppen we de sessie.");
+                                    return;
+                                }
+                            }
+                        } else if (answer.equals("nee")) {
+                            userController.setScrumMasterFlag(username, false);
+                            System.out.printf("Ingelogd als '%s'%n", username);
+                            break;
+                        } else {
+                            System.out.println("Ongeldig antwoord. Typ 'ja' of 'nee'.");
+                        }
+                    }
                     break;
                 } else {
                     System.out.println("Gebruiker niet gevonden. Probeer het opnieuw of registreer.");
                 }
-        } else
-            {
+            } else
+                {
                 System.out.println("Ongeldige optie. Typ 'login' of 'register'.");
+                }
             }
-        }
         messageController = new MessageController(userController.getCurrentUser());
         mainMenu();
     }
