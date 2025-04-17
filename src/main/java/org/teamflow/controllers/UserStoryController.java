@@ -25,9 +25,9 @@ public class UserStoryController {
         return instance;
     }
 
-    public boolean createEpic(String name) {
+    public boolean createUserStory(String name) {
         if (getUserStoryByName(name) != null) return false;
-        int nextId = generateNextEpicId();
+        int nextId = generateNextUserStoryId();
         UserStory userStory = new UserStory(name, nextId, tasks);
         userStories.add(userStory);
         storageManager.saveUserStories(userStories);
@@ -36,7 +36,7 @@ public class UserStoryController {
     }
 
 
-    private int generateNextEpicId()
+    private int generateNextUserStoryId()
     {
         int maxId = 0;
         for (UserStory userStory : userStories)
