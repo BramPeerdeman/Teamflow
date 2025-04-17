@@ -9,10 +9,7 @@ import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 
-import org.teamflow.models.Task;
-import org.teamflow.models.Epic;
-import org.teamflow.models.Message;
-import org.teamflow.models.User;
+import org.teamflow.models.*;
 
 public class JSONHelper
 {
@@ -20,6 +17,7 @@ public class JSONHelper
     private static final String FILE_PATH2 = "tasks.json";
     private static final String FILE_PATH3 = "epics.json";
     private static final String FILE_PATH4 = "messages.json";
+    private static final String FILE_PATH5 = "userstories.json";
     private static final Gson gson = new Gson();
 
     public static ArrayList<User> loadUsers()
@@ -96,8 +94,8 @@ public class JSONHelper
     {
         try (FileReader reader = new FileReader(FILE_PATH4))
         {
-            Type epicListType = new TypeToken<ArrayList<Epic>>() {}.getType();
-            return gson.fromJson(reader, epicListType);
+            Type listType = new TypeToken<ArrayList<Message>>() {}.getType();
+            return gson.fromJson(reader, listType);
         } catch (IOException e)
         {
             return new ArrayList<>();
@@ -112,6 +110,29 @@ public class JSONHelper
         } catch (IOException e)
         {
             System.out.println("Fout bij het opslaan van messages: " + e.getMessage());
+        }
+    }
+
+    public static ArrayList<UserStory> loadUserStories()
+    {
+        try (FileReader reader = new FileReader(FILE_PATH5))
+        {
+            Type listType = new TypeToken<ArrayList<UserStory>>() {}.getType();
+            return gson.fromJson(reader, listType);
+        } catch (IOException e)
+        {
+            return new ArrayList<>();
+        }
+    }
+
+    public static void saveUserStories(ArrayList<UserStory> userStories)
+    {
+        try (FileWriter writer = new FileWriter(FILE_PATH5))
+        {
+            gson.toJson(userStories, writer);
+        } catch (IOException e)
+        {
+            System.out.println("Fout bij het opslaan van userstories: " + e.getMessage());
         }
     }
 }

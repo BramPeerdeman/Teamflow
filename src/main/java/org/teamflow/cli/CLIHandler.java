@@ -3,6 +3,7 @@ package org.teamflow.cli;
 import org.teamflow.controllers.EpicController;
 import org.teamflow.controllers.MessageController;
 import org.teamflow.controllers.TaskController;
+import org.teamflow.controllers.UserStoryController;
 import org.teamflow.models.Epic;
 import org.teamflow.controllers.UserController;
 import org.teamflow.models.Task;
@@ -18,14 +19,15 @@ public class CLIHandler
     private EpicController epicController;
     private UserController userController;
     private TaskController taskController;
+    private UserStoryController userStoryController;
     private MessageController messageController;
     private ArrayList<Epic> epics = new ArrayList<>();
 
     public CLIHandler () {
         scanner = new Scanner(System.in);
         userController = new UserController();
-
         epicController = EpicController.getInstance();
+        userStoryController = UserStoryController.getInstance();
     }
     private ArrayList<String> asciiArt = new ArrayList<String>(Arrays.asList(
             "",
@@ -66,27 +68,73 @@ public class CLIHandler
                 {
                     System.out.println("Deze naam is al in gebruik. Probeer een andere.");
                 }
-            } else if (choice.equalsIgnoreCase("login"))
-            {
+            } else if (choice.equalsIgnoreCase("login")) {
                 success = userController.login(username);
-                if (success)
-                {
-                    System.out.printf("Ingelogd als '%s'%n", username);
+                if (success) {
+                    while (true) {
+                        System.out.println("Ben jij de Scrum Master? (ja/nee)");
+                        String answer = scanner.nextLine().trim().toLowerCase();
+
+                        if (answer.equals("ja")) {
+                            boolean set = userController.setScrumMasterFlag(username, true);
+                            if (set) {
+                                System.out.printf("Ingelogd als '%s' (Scrum Master)%n", username);
+                                break;
+                            } else {
+                                System.out.println("Wil je als gewone gebruiker verder? (ja/nee)");
+                                String fallback = scanner.nextLine().trim().toLowerCase();
+                                if (fallback.equals("ja")) {
+                                    userController.setScrumMasterFlag(username, false);
+                                    System.out.printf("Ingelogd als '%s'%n", username);
+                                    break;
+                                } else {
+                                    System.out.println("Oké, dan stoppen we de sessie.");
+                                    return;
+                                }
+                            }
+                        } else if (answer.equals("nee")) {
+                            userController.setScrumMasterFlag(username, false);
+                            System.out.printf("Ingelogd als '%s'%n", username);
+                            break;
+                        } else {
+                            System.out.println("Ongeldig antwoord. Typ 'ja' of 'nee'.");
+                        }
+                    }
                     break;
-                } else
-                {
+                } else {
                     System.out.println("Gebruiker niet gevonden. Probeer het opnieuw of registreer.");
                 }
             } else
-            {
+                {
                 System.out.println("Ongeldige optie. Typ 'login' of 'register'.");
+                }
             }
-        }
         messageController = new MessageController(userController.getCurrentUser());
         mainMenu();
     }
     private void epicMenu() {
         clearConsole();
+        while (true) {
+            System.out.println("1. Voeg Epic toe");
+            System.out.println("2. Laat Epics zien");
+            System.out.print("> ");
+
+            String choice = scanner.nextLine().trim();
+            switch (choice) {
+                case "1":
+                    voegEpicToe();
+                    break;
+                case "2":
+                    listEpics();
+                    break;
+                default:
+                    System.out.println("Onbekende optie.");
+            }
+
+        }
+    }
+
+    private void voegEpicToe() {
         System.out.println("=== Voeg Epic Toe ===");
         System.out.print("Naam Epic: ");
         String name = scanner.nextLine().trim();
@@ -111,6 +159,12 @@ public class CLIHandler
         System.out.flush();
     }
     private void mainMenu() {
+        Boolean isScrumMaster = userController.getCurrentUser().getIsScrumMaster();
+        if (Boolean.TRUE.equals(isScrumMaster)) {
+            System.out.println("Welkom Scrum Master!");
+        }
+
+
         while (true) {
             System.out.println("1. Epics");
             System.out.println("2. UserStories");
@@ -152,14 +206,15 @@ public class CLIHandler
                 System.out.println("Je moet eerst een Epic aanmaken of selecteren (optie 1).");
             } else {
 
-                UserStory us = new UserStory(titel);
-                current.voegUserStoryToe(us);
+                boolean success = userStoryController.createUserStory(titel);
+                if (success) {
+                    epicController.saveEpics();
 
-
-                epicController.saveEpics();
-
-                System.out.println("User Story toegevoegd onder Epic '"
-                        + current.getTitel() + "': " + titel);
+                    System.out.println("User Story toegevoegd onder Epic '"
+                            + current.getTitel() + "': " + titel);
+                } else {
+                    System.out.println("UserStory '" + titel + "' bestaat al.");
+                }
             }
         }
 
@@ -170,7 +225,7 @@ public class CLIHandler
 
     private void taskMenu() {
         clearConsole();
-        System.out.print("=== Voeg Taak Toe ===");
+        System.out.println("=== Voeg Taak Toe ===");
         System.out.print("Voer de titel in voor de nieuwe taak: ");
         String title = scanner.nextLine().trim();
         System.out.print("Voer de beschrijving van de taak in:");
@@ -187,14 +242,14 @@ public class CLIHandler
             }
         } else {
             // Haal de actieve us uit de controller
-            UserStory current = UserStoryController.getCurrentUserStory();
+            UserStory current = UserStoryController.getInstance().getCurrentUserStory();
             if (current == null) {
                 System.out.println("Je moet eerst een User Story aanmaken of selecteren.");
             } else {
 
                 taskController.createTask(title, content, userController.getCurrentUser().getId());
 
-                userStoryController.saveUserStory();
+                userStoryController.saveUserStories();
 
                 System.out.println("Taak toegevoegd onder User Story '"
                         + current.getTitel() + "': " + title);
@@ -214,14 +269,15 @@ public class CLIHandler
     }
 
     private void listEpics() {
-        if (epics.isEmpty()) {
+        if (epicController.getEpics().isEmpty()) {
             System.out.println("leeg");
         } else {
             System.out.println("epics:");
-            for (int i = 0; i < epics.size(); i++) {
-                Epic epic = epics.get(i);
+            for (int i = 0; i < epicController.getEpics().size(); i++) {
+                Epic epic = epicController.getEpics().get(i);
                 System.out.printf("%d. %s%n", 1 + i, epic.getTitel());
             }
         }
+        System.out.println();
     }
 }

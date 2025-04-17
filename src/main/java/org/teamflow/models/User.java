@@ -4,6 +4,7 @@ public class User
 {
     private int id;
     private String name;
+    private Boolean isScrumMaster;
 
     public User(int id, String name)
     {
@@ -32,5 +33,15 @@ public class User
     public void setName(String name)
     {
         this.name = name;
+    }
+
+    public Boolean getIsScrumMaster()
+    {
+        return isScrumMaster;
+    }
+
+    public void setIsScrumMaster(Boolean isScrumMaster)
+    {
+        this.isScrumMaster = isScrumMaster;
     }
 }
