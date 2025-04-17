@@ -1,8 +1,11 @@
 package org.teamflow.cli;
 
+import org.teamflow.controllers.EpicController;
+import org.teamflow.controllers.MessageController;
 import org.teamflow.models.Epic;
 import org.teamflow.models.User;
 import org.teamflow.controllers.UserController;
+import org.teamflow.models.UserStory;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -11,12 +14,16 @@ import java.util.Scanner;
 public class CLIHandler
 {
     private Scanner scanner;
+    private EpicController epicController;
     private UserController userController;
+    private MessageController messageController;
     private ArrayList<Epic> epics = new ArrayList<>();
 
     public CLIHandler () {
         scanner = new Scanner(System.in);
         userController = new UserController();
+
+        epicController = EpicController.getInstance();
     }
     private ArrayList<String> asciiArt = new ArrayList<String>(Arrays.asList(
             "",
@@ -75,7 +82,33 @@ public class CLIHandler
                 System.out.println("Ongeldige optie. Typ 'login' of 'register'.");
             }
         }
+        messageController = new MessageController(userController.getCurrentUser());
         mainMenu();
+    }
+    private void epicMenu() {
+        clearConsole();
+        System.out.println("=== Voeg Epic Toe ===");
+        System.out.print("Naam Epic: ");
+        String name = scanner.nextLine().trim();
+
+        if (name.isEmpty()) {
+            System.out.println("Naam mag niet leeg zijn.");
+        } else {
+            // AANPASSING HIER: instance‑methode gebruiken
+            boolean success = epicController.createEpic(name);
+            if (success) {
+                System.out.println("Epic toegevoegd: " + name);
+            } else {
+                System.out.println("Epic '" + name + "' bestaat al.");
+            }
+        }
+
+        System.out.println("Druk ENTER om terug te gaan...");
+        scanner.nextLine();
+    }
+    private void clearConsole() {
+        System.out.print("\033[H\033[2J");
+        System.out.flush();
     }
     private void mainMenu() {
         Boolean isScrumMaster = userController.getCurrentUser().getIsScrumMaster();
@@ -85,10 +118,57 @@ public class CLIHandler
 
 
         while (true) {
+            System.out.println("1. Epics");
+            System.out.println("2. UserStories");
+            System.out.println("3. Taken");
+            System.out.println("4. Berichten");
             System.out.print("> ");
-            String input = scanner.nextLine();
-            handleCommand(input);
+
+            String choice = scanner.nextLine().trim();
+            switch (choice) {
+                case "1":
+                    epicMenu();
+                    break;
+                case "2":
+                    userStoryMenu();
+                    break;
+                default:
+                    System.out.println("Onbekende optie.");
+            }
+
         }
+
+
+    }
+    private void userStoryMenu() {
+        clearConsole();
+        System.out.println("=== Voeg User Story Toe ===");
+        System.out.print("Voer de titel in voor de nieuwe User Story: ");
+        String titel = scanner.nextLine().trim();
+
+        if (titel.isEmpty()) {
+            System.out.println("Titel mag niet leeg zijn. Terug naar hoofdmenu.");
+        } else {
+            // Haal de actieve Epic uit de controller
+            Epic current = epicController.getCurrentEpic();
+            if (current == null) {
+                System.out.println("Je moet eerst een Epic aanmaken of selecteren (optie 1).");
+            } else {
+
+                UserStory us = new UserStory(titel);
+                current.voegUserStoryToe(us);
+
+
+                epicController.saveEpics();
+
+                System.out.println("User Story toegevoegd onder Epic '"
+                        + current.getTitel() + "': " + titel);
+            }
+        }
+
+        System.out.println("\nDruk ENTER om terug te keren naar het hoofdmenu.");
+        scanner.nextLine();
+        // mainMenu blijft draaien, dus je returnt automatisch weer naar het hoofdscherm
     }
 
     private void handleCommand(String comment) {
