@@ -1,5 +1,6 @@
 package org.teamflow.cli;
 
+import org.teamflow.controllers.EpicController;
 import org.teamflow.models.Epic;
 import org.teamflow.models.User;
 import org.teamflow.controllers.UserController;
@@ -11,12 +12,14 @@ import java.util.Scanner;
 public class CLIHandler
 {
     private Scanner scanner;
+    private EpicController epicController;
     private UserController userController;
     private ArrayList<Epic> epics = new ArrayList<>();
 
     public CLIHandler () {
         scanner = new Scanner(System.in);
         userController = new UserController();
+        epicController = EpicController.getInstance();
     }
     private ArrayList<String> asciiArt = new ArrayList<String>(Arrays.asList(
             "",
@@ -75,12 +78,52 @@ public class CLIHandler
         }
         mainMenu();
     }
+    private void epicMenu() {
+        clearConsole();
+        System.out.println("=== Voeg Epic Toe ===");
+        System.out.print("Naam Epic: ");
+        String name = scanner.nextLine().trim();
+
+        if (name.isEmpty()) {
+            System.out.println("Naam mag niet leeg zijn.");
+        } else {
+            // AANPASSING HIER: instance‑methode gebruiken
+            boolean success = epicController.createEpic(name);
+            if (success) {
+                System.out.println("Epic toegevoegd: " + name);
+            } else {
+                System.out.println("Epic '" + name + "' bestaat al.");
+            }
+        }
+
+        System.out.println("Druk ENTER om terug te gaan...");
+        scanner.nextLine();
+    }
+    private void clearConsole() {
+        System.out.print("\033[H\033[2J");
+        System.out.flush();
+    }
     private void mainMenu() {
         while (true) {
+            System.out.println("1. Epics");
+            System.out.println("2. UserStories");
+            System.out.println("3. Taken");
+            System.out.println("4. Berichten");
             System.out.print("> ");
-            String input = scanner.nextLine();
-            handleCommand(input);
+
+            String choice = scanner.nextLine().trim();
+            switch (choice) {
+                case "1":
+                    epicMenu();
+                    break;
+                // ... andere opties ...
+                default:
+                    System.out.println("Onbekende optie.");
+            }
+
         }
+
+
     }
 
     private void handleCommand(String comment) {
