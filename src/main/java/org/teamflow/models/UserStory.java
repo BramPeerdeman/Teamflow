@@ -6,6 +6,10 @@ public class UserStory {
     private String titel;
     ArrayList<Task> taskList= new ArrayList<>();
 
+    public UserStory(String titel) {
+        this.titel = titel;
+    }
+
 
     public String getTitel() {
         return titel;
