@@ -2,6 +2,7 @@ package org.teamflow.controllers;
 
 import org.teamflow.models.User;
 import org.teamflow.storage.StorageManager;
+import org.teamflow.utils.JSONHelper;
 
 import java.util.ArrayList;
 
@@ -69,5 +70,30 @@ public class UserController {
     public String getCurrentUserName() {
         return currentUser != null ? currentUser.getName() : null;
     }
+
+    public boolean setScrumMasterFlag(String username, boolean isScrumMaster) {
+        ArrayList<User> users = JSONHelper.loadUsers();
+
+        if (isScrumMaster) {
+            for (User user : users) {
+                if (Boolean.TRUE.equals(user.getIsScrumMaster()) && !user.getName().equals(username)) {
+                    System.out.println("Er is al een Scrum Master: " + user.getName());
+                    return false; // niet toegestaan
+                }
+            }
+        }
+
+        for (User user : users) {
+            if (user.getName().equals(username)) {
+                user.setIsScrumMaster(isScrumMaster);
+                JSONHelper.saveUsers(users);
+                return true;
+            }
+        }
+
+        return false; // gebruiker niet gevonden
+    }
+
+
 }
 
