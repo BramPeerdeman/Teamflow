@@ -1,1 +1,1 @@
-[{"id":0,"name":"Bram"},{"id":1,"name":"Test"}]
+[{"id":0,"name":"Bram","isScrumMaster":false},{"id":1,"name":"Test"},{"id":2,"name":"test1","isScrumMaster":true}]

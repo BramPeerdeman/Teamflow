@@ -57,18 +57,20 @@ public class CLIHandler
                 {
                     System.out.println("Deze naam is al in gebruik. Probeer een andere.");
                 }
-            } else if (choice.equalsIgnoreCase("login"))
-            {
+            } else if (choice.equalsIgnoreCase("login")) {
                 success = userController.login(username);
-                if (success)
-                {
+                if (success) {
+                    System.out.println("Ben jij de Scrum Master? (ja/nee)");
+                    String answer = scanner.nextLine();
+                    boolean isScrumMaster = answer.equalsIgnoreCase("ja");
+                    userController.setScrumMasterFlag(username, isScrumMaster);
+
                     System.out.printf("Ingelogd als '%s'%n", username);
                     break;
-                } else
-                {
+                } else {
                     System.out.println("Gebruiker niet gevonden. Probeer het opnieuw of registreer.");
                 }
-            } else
+        } else
             {
                 System.out.println("Ongeldige optie. Typ 'login' of 'register'.");
             }
@@ -76,6 +78,12 @@ public class CLIHandler
         mainMenu();
     }
     private void mainMenu() {
+        Boolean isScrumMaster = userController.getCurrentUser().getIsScrumMaster();
+        if (Boolean.TRUE.equals(isScrumMaster)) {
+            System.out.println("Welkom Scrum Master!");
+        }
+
+
         while (true) {
             System.out.print("> ");
             String input = scanner.nextLine();
