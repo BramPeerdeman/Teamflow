@@ -115,6 +115,7 @@ public class CLIHandler
         while (true) {
             System.out.println("1. Voeg Epic toe");
             System.out.println("2. Laat Epics zien");
+            System.out.println("3. Terug naar main menu");
             System.out.print("> ");
 
             String choice = scanner.nextLine().trim();
@@ -124,6 +125,9 @@ public class CLIHandler
                     break;
                 case "2":
                     listEpics();
+                    break;
+                case "3":
+                    mainMenu();
                     break;
                 default:
                     System.out.println("Onbekende optie.");
@@ -151,6 +155,7 @@ public class CLIHandler
 
         System.out.println("Druk ENTER om terug te gaan...");
         scanner.nextLine();
+        mainMenu();
     }
     private void clearConsole() {
         System.out.print("\033[H\033[2J");
