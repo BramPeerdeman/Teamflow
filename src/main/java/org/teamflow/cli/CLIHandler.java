@@ -189,12 +189,6 @@ public class CLIHandler
                 } else {
                     System.out.println("UserStory '" + titel + "' bestaat al.");
                 }
-
-
-                epicController.saveEpics();
-
-                System.out.println("User Story toegevoegd onder Epic '"
-                        + current.getTitel() + "': " + titel);
             }
         }
 
