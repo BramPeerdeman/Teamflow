@@ -1,6 +1,7 @@
 package org.teamflow.cli;
 
 import org.teamflow.controllers.EpicController;
+import org.teamflow.controllers.MessageController;
 import org.teamflow.models.Epic;
 import org.teamflow.models.User;
 import org.teamflow.controllers.UserController;
@@ -14,6 +15,7 @@ public class CLIHandler
     private Scanner scanner;
     private EpicController epicController;
     private UserController userController;
+    private MessageController messageController;
     private ArrayList<Epic> epics = new ArrayList<>();
 
     public CLIHandler () {
@@ -76,6 +78,7 @@ public class CLIHandler
                 System.out.println("Ongeldige optie. Typ 'login' of 'register'.");
             }
         }
+        messageController = new MessageController(userController.getCurrentUser());
         mainMenu();
     }
     private void epicMenu() {
