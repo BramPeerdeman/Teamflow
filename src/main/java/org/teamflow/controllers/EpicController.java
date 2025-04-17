@@ -67,4 +67,8 @@ public class EpicController {
     public String getCurrentEpicName() {
         return currentEpic != null ? currentEpic.getTitel() : null;
     }
+
+    public void saveEpics() {
+        storageManager.saveEpics(epics);
+    }
 }

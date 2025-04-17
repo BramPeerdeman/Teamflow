@@ -4,6 +4,7 @@ import org.teamflow.controllers.EpicController;
 import org.teamflow.models.Epic;
 import org.teamflow.models.User;
 import org.teamflow.controllers.UserController;
+import org.teamflow.models.UserStory;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -19,6 +20,7 @@ public class CLIHandler
     public CLIHandler () {
         scanner = new Scanner(System.in);
         userController = new UserController();
+
         epicController = EpicController.getInstance();
     }
     private ArrayList<String> asciiArt = new ArrayList<String>(Arrays.asList(
@@ -116,7 +118,9 @@ public class CLIHandler
                 case "1":
                     epicMenu();
                     break;
-                // ... andere opties ...
+                case "2":
+                    userStoryMenu();
+                    break;
                 default:
                     System.out.println("Onbekende optie.");
             }
@@ -124,6 +128,36 @@ public class CLIHandler
         }
 
 
+    }
+    private void userStoryMenu() {
+        clearConsole();
+        System.out.println("=== Voeg User Story Toe ===");
+        System.out.print("Voer de titel in voor de nieuwe User Story: ");
+        String titel = scanner.nextLine().trim();
+
+        if (titel.isEmpty()) {
+            System.out.println("Titel mag niet leeg zijn. Terug naar hoofdmenu.");
+        } else {
+            // Haal de actieve Epic uit de controller
+            Epic current = epicController.getCurrentEpic();
+            if (current == null) {
+                System.out.println("Je moet eerst een Epic aanmaken of selecteren (optie 1).");
+            } else {
+
+                UserStory us = new UserStory(titel);
+                current.voegUserStoryToe(us);
+
+
+                epicController.saveEpics();
+
+                System.out.println("User Story toegevoegd onder Epic '"
+                        + current.getTitel() + "': " + titel);
+            }
+        }
+
+        System.out.println("\nDruk ENTER om terug te keren naar het hoofdmenu.");
+        scanner.nextLine();
+        // mainMenu blijft draaien, dus je returnt automatisch weer naar het hoofdscherm
     }
 
     private void handleCommand(String comment) {
