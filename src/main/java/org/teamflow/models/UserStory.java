@@ -13,6 +13,10 @@ public class UserStory {
         this.taskList = taken;
     }
 
+    public UserStory(String titel) {
+        this.titel = titel;
+    }
+
 
     public String getTitel() {
         return titel;
