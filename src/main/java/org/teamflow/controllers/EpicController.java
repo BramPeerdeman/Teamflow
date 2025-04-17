@@ -7,19 +7,25 @@ import org.teamflow.storage.StorageManager;
 import java.util.ArrayList;
 
 public class EpicController {
+    private static EpicController instance;
     private Epic currentEpic;
     private ArrayList<Epic> epics;
     private StorageManager storageManager;
     private ArrayList<UserStory> userStories = new ArrayList<>();
 
-    public EpicController()
-    {
+    private EpicController() {
         storageManager = new StorageManager();
         epics = storageManager.loadEpics();
     }
 
-    public boolean createEpic(String name)
-    {
+    public static EpicController getInstance() {
+        if (instance == null) {
+            instance = new EpicController();
+        }
+        return instance;
+    }
+
+    public boolean createEpic(String name) {
         if (getEpicByName(name) != null) return false;
         int nextId = generateNextEpicId();
         Epic epic = new Epic(nextId, name, userStories);
@@ -28,6 +34,7 @@ public class EpicController {
         currentEpic = epic;
         return true;
     }
+
 
     private int generateNextEpicId()
     {
@@ -40,17 +47,6 @@ public class EpicController {
             }
         }
         return maxId + 1;
-    }
-
-    public boolean login(String name)
-    {
-        Epic user = getEpicByName(name);
-        if (user != null)
-        {
-            currentEpic = user;
-            return true;
-        }
-        return false;
     }
 
     private Epic getEpicByName(String name)
