@@ -24,6 +24,7 @@ public class CLIHandler
     private ArrayList<Epic> epics = new ArrayList<>();
 
     public CLIHandler () {
+        taskController = new TaskController();
         scanner = new Scanner(System.in);
         userController = new UserController();
         epicController = EpicController.getInstance();
