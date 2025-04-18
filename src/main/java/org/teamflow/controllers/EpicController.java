@@ -75,4 +75,8 @@ public class EpicController {
     public ArrayList<Epic> getEpics() {
         return storageManager.loadEpics();
     }
+
+    public void setCurrentEpic(Epic currentEpic) {
+        this.currentEpic = currentEpic;
+    }
 }

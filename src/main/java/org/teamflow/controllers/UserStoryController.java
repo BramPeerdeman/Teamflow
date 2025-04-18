@@ -71,4 +71,8 @@ public class UserStoryController {
     public void saveUserStories() {
         storageManager.saveUserStories(userStories);
     }
+
+    public ArrayList<UserStory> getUserStories() {
+        return storageManager.loadUserStories();
+    }
 }
