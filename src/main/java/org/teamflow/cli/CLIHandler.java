@@ -199,12 +199,72 @@ public class CLIHandler
     }
     private void userStoryMenu() {
         clearConsole();
+        while (true) {
+            System.out.printf("Huidige Epic: %s%n", epicController.getCurrentEpicName());
+            System.out.println("1. Voeg UserStory toe");
+            System.out.println("2. Laat UserStories zien");
+            System.out.println("3. Selecteer Epic");
+            System.out.println("4. Terug naar main menu");
+            System.out.print("> ");
+
+            String choice = scanner.nextLine().trim();
+            switch (choice) {
+                case "1":
+                    voegUserStoryToe();
+                    break;
+                case "2":
+                    listUserStories();
+                    break;
+                case "3":
+                    selectEpic();
+                    break;
+                case "4":
+                    mainMenu();
+                    break;
+                default:
+                    System.out.println("Onbekende optie.");
+            }
+
+        }
+    }
+    private void voegUserStoryToe() {
+        if (epicController.getEpics().isEmpty()) {
+            System.out.println("U heeft geen Epics");
+            return;
+        } else if (epicController.getCurrentEpic() == null) {
+            System.out.println("U heeft nog geen Epic Geselecteert.");
+            selectEpic();
+            while (true) {
+                System.out.println("Klopt dit?");
+                System.out.println("1. Ja");
+                System.out.println("2. Nee");
+                System.out.print(">");
+                String choice = scanner.nextLine().trim();
+
+                switch (choice) {
+                    case "1":
+                        break;
+                    case "2":
+                        selectEpic();
+                        break;
+                    default:
+                        System.out.println("Onbekende optie.");
+                        break;
+                }
+                if (choice.equals("1")){
+                    break;
+                }
+            }
+
+
+        }
+        clearConsole();
         System.out.println("=== Voeg User Story Toe ===");
         System.out.print("Voer de titel in voor de nieuwe User Story: ");
         String titel = scanner.nextLine().trim();
 
         if (titel.isEmpty()) {
-            System.out.println("Titel mag niet leeg zijn. Terug naar hoofdmenu.");
+            System.out.println("Titel mag niet leeg zijn.");
         } else {
             // Haal de actieve Epic uit de controller
             Epic current = epicController.getCurrentEpic();
@@ -286,4 +346,41 @@ public class CLIHandler
         }
         System.out.println();
     }
+
+    private void listUserStories() {
+        if (userStoryController.getUserStories().isEmpty()) {
+            System.out.println("leeg");
+        } else {
+            System.out.println("user stories:");
+            for (int i = 0; i < userStoryController.getUserStories().size(); i++) {
+                UserStory userStory = userStoryController.getUserStories().get(i);
+                System.out.printf("%d. %s%n", 1 + i, userStory.getTitel());
+            }
+        }
+        System.out.println();
+    }
+
+    public void selectEpic() {
+        clearConsole();
+        while (true) {
+            System.out.println("Beschikbare Epics:");
+            for (int i = 0; i < epicController.getEpics().size(); i++) {
+                System.out.println(i + ": " + epicController.getEpics().get(i).getTitel());
+            }
+
+            System.out.print("Druk de nummer van de Epic die je wilt selecteren: ");
+            int index = scanner.nextInt();
+            scanner.nextLine();
+
+            if (index >= 0 && index < epicController.getEpics().size()) {
+                Epic selectedEpic = epicController.getEpics().get(index);
+                epicController.setCurrentEpic(selectedEpic);
+                System.out.println("Geselecteerde Epic: " + selectedEpic.getTitel());
+                break;
+            } else {
+                System.out.println("Invalide nummer. Probeer opnieuw.");
+            }
+        }
+    }
+
 }
