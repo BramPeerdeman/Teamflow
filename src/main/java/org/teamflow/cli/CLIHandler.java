@@ -22,6 +22,7 @@ public class CLIHandler
     private UserStoryController userStoryController;
     private MessageController messageController;
     private ArrayList<Epic> epics = new ArrayList<>();
+    private boolean running = true;
 
     public CLIHandler () {
         taskController = new TaskController();
@@ -115,10 +116,11 @@ public class CLIHandler
     }
     private void epicMenu() {
         clearConsole();
-        while (true) {
+        while (running) {
             System.out.println("1. Voeg Epic toe");
             System.out.println("2. Laat Epics zien");
-            System.out.println("3. Terug naar main menu");
+            System.out.println("3. Verwijder Epic");
+            System.out.println("4. Terug naar main menu");
             System.out.print("> ");
 
             String choice = scanner.nextLine().trim();
@@ -130,6 +132,9 @@ public class CLIHandler
                     listEpics();
                     break;
                 case "3":
+                    verwijderEpic();
+                    break;
+                case "4":
                     mainMenu();
                     break;
                 default:
@@ -171,11 +176,12 @@ public class CLIHandler
         }
 
 
-        while (true) {
+        while (running) {
             System.out.println("1. Epics");
             System.out.println("2. UserStories");
             System.out.println("3. Taken");
             System.out.println("4. Berichten");
+            System.out.println("10. Sluit Applicatie");
             System.out.print("> ");
 
             String choice = scanner.nextLine().trim();
@@ -189,6 +195,10 @@ public class CLIHandler
                 case "3" :
                     taskMenu();
                     break;
+                case "10":
+                    running = false;
+                    System.out.println("Afsluiten...");
+                    break;
                 default:
                     System.out.println("Onbekende optie.");
             }
@@ -199,7 +209,7 @@ public class CLIHandler
     }
     private void userStoryMenu() {
         clearConsole();
-        while (true) {
+        while (running) {
             System.out.printf("Huidige Epic: %s%n", epicController.getCurrentEpicName());
             System.out.println("1. Voeg UserStory toe");
             System.out.println("2. Laat UserStories zien");
@@ -362,11 +372,12 @@ public class CLIHandler
 
     public void selectEpic() {
         clearConsole();
-        while (true) {
+        while (running) {
             System.out.println("Beschikbare Epics:");
             for (int i = 0; i < epicController.getEpics().size(); i++) {
                 System.out.println(i + ": " + epicController.getEpics().get(i).getTitel());
             }
+            System.out.printf("%d: Ga terug", epicController.getEpics().size());
 
             System.out.print("Druk de nummer van de Epic die je wilt selecteren: ");
             int index = scanner.nextInt();
@@ -377,9 +388,38 @@ public class CLIHandler
                 epicController.setCurrentEpic(selectedEpic);
                 System.out.println("Geselecteerde Epic: " + selectedEpic.getTitel());
                 break;
+            } else if (index == epicController.getEpics().size()) {
+                mainMenu();
+                break;
             } else {
                 System.out.println("Invalide nummer. Probeer opnieuw.");
             }
+        }
+    }
+    public void verwijderEpic() {
+        clearConsole();
+        Epic previousEpic = epicController.getCurrentEpic();
+        selectEpic();
+        while (true) {
+            System.out.printf("Verwijder %s?%n", epicController.getCurrentEpicName());
+            System.out.println("1. Ja");
+            System.out.println("2. Nee");
+            System.out.print(">");
+            String choice = scanner.nextLine().trim();
+
+            switch (choice) {
+                case "1":
+                    System.out.println("Verwijderen...");
+                    epicController.removeCurrentEpic();
+                    break;
+                case "2":
+                    epicController.setCurrentEpic(previousEpic);
+                    break;
+                default:
+                    System.out.println("Onbekende optie.");
+                    break;
+            }
+            break;
         }
     }
 

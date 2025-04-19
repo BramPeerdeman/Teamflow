@@ -79,4 +79,8 @@ public class EpicController {
     public void setCurrentEpic(Epic currentEpic) {
         this.currentEpic = currentEpic;
     }
+
+    public void removeCurrentEpic() {
+        storageManager.loadEpics().remove(currentEpic);
+    }
 }
