@@ -5,6 +5,8 @@ import org.teamflow.controllers.UserStoryController;
 import org.teamflow.models.Epic;
 import org.teamflow.models.UserStory;
 
+import java.util.ArrayList;
+
 public class UserStoryMenu extends Menu {
     private EpicController epicController;
     private UserStoryController userStoryController;
@@ -22,7 +24,8 @@ public class UserStoryMenu extends Menu {
             System.out.println("1. Voeg UserStory toe");
             System.out.println("2. Laat UserStories zien");
             System.out.println("3. Selecteer Epic");
-            System.out.println("4. Terug naar main menu");
+            System.out.println("4. Verwijder UserStory");
+            System.out.println("5. Terug naar main menu");
             System.out.print("> ");
 
             String choice = scanner.nextLine().trim();
@@ -37,6 +40,9 @@ public class UserStoryMenu extends Menu {
                     selectEpic();
                     break;
                 case "4":
+                    verwijderUserStory();
+                    break;
+                case "5":
                     cliHandler.getMainMenu().displayMenu();
                     break;
                 default:
@@ -147,5 +153,57 @@ public class UserStoryMenu extends Menu {
             }
         }
     }
+
+    private void verwijderUserStory() {
+        Epic currentEpic = epicController.getCurrentEpic();
+
+        if (currentEpic == null) {
+            System.out.println("Geen Epic geselecteerd. Selecteer eerst een Epic.");
+            return;
+        }
+
+        ArrayList<UserStory> stories = currentEpic.getUserStories();
+
+        if (stories.isEmpty()) {
+            System.out.println("Deze Epic heeft geen User Stories.");
+            return;
+        }
+
+        System.out.println("User Stories van '" + currentEpic.getTitel() + "':");
+        for (int i = 0; i < stories.size(); i++) {
+            System.out.printf("%d. %s%n", i + 1, stories.get(i).getTitel());
+        }
+
+        System.out.print("Voer het nummer in van de User Story om te verwijderen: ");
+        String input = scanner.nextLine().trim();
+
+        try {
+            int index = Integer.parseInt(input) - 1;
+            if (index >= 0 && index < stories.size()) {
+                UserStory toDelete = stories.get(index);
+                System.out.print("Weet je zeker dat je '" + toDelete.getTitel() + "' wilt verwijderen? (j/n): ");
+                String confirm = scanner.nextLine().trim().toLowerCase();
+
+                if (confirm.equals("j")) {
+                    currentEpic.getUserStories().remove(toDelete);
+                    userStoryController.getUserStories().remove(toDelete); // ook uit lijst van controller
+                    userStoryController.saveUserStories();
+                    epicController.saveEpics();
+                    System.out.println("User Story '" + toDelete.getTitel() + "' is verwijderd.");
+                } else {
+                    System.out.println("Verwijderen geannuleerd.");
+                }
+            } else {
+                System.out.println("Ongeldig nummer.");
+            }
+        } catch (NumberFormatException e) {
+            System.out.println("Voer een geldig nummer in.");
+        }
+
+        System.out.println("Druk ENTER om terug te gaan...");
+        scanner.nextLine();
+    }
+
+
 }
 
