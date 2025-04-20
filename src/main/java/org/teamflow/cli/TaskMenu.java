@@ -8,6 +8,8 @@ import org.teamflow.models.Epic;
 import org.teamflow.models.Task;
 import org.teamflow.models.UserStory;
 
+import java.util.ArrayList;
+
 public class TaskMenu extends Menu {
     private EpicController epicController;
     private UserStoryController userStoryController;
@@ -98,6 +100,7 @@ public class TaskMenu extends Menu {
                 System.out.println("Je moet eerst een User Story aanmaken of selecteren (optie 3).");
             } else {
                 Task task = taskController.createTask(titel, content, userController.getCurrentUser().getId());
+                current.addTask(task);
                 userStoryController.saveUserStories();
                 System.out.println("Taak toegevoegd onder User Story '" + current.getTitel() + "': " + titel);
             }
@@ -108,18 +111,25 @@ public class TaskMenu extends Menu {
     }
 
     private void listTaken() {
-        int userId = userController.getCurrentUser().getId();
-        if (taskController.getTasksForUser(userId).isEmpty()) {
+        UserStory currentUserStory = userStoryController.getCurrentUserStory();
+        if (currentUserStory == null) {
+            System.out.println("Geen User Story geselecteerd.");
+            return;
+        }
+
+        ArrayList<Task> taken = currentUserStory.gettaskList();
+        if (taken.isEmpty()) {
             System.out.println("leeg");
         } else {
-            System.out.println("taken:");
-            for (int i = 0; i < taskController.getTasksForUser(userId).size(); i++) {
-                Task task = taskController.getTasksForUser(userId).get(i);
+            System.out.printf("taken %s:", userStoryController.getCurrentUserStory());
+            for (int i = 0; i < taken.size(); i++) {
+                Task task = taken.get(i);
                 System.out.printf("%d. %s%n", 1 + i, task.getTitle());
             }
         }
         System.out.println();
     }
+
 
     public void selectUserStory() {
         clearConsole();
