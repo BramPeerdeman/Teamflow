@@ -92,6 +92,7 @@ public class UserStoryMenu extends Menu {
 
                 boolean success = userStoryController.createUserStory(titel);
                 if (success) {
+                    current.voegUserStoryToe(userStoryController.getCurrentUserStory());
                     epicController.saveEpics();
 
                     System.out.println("User Story toegevoegd onder Epic '"
@@ -127,7 +128,7 @@ public class UserStoryMenu extends Menu {
             for (int i = 0; i < epicController.getEpics().size(); i++) {
                 System.out.println(i + ": " + epicController.getEpics().get(i).getTitel());
             }
-            System.out.printf("%d: Ga terug", epicController.getEpics().size());
+            System.out.printf("%d: Ga terug%n", epicController.getEpics().size());
 
             System.out.print("Druk de nummer van de Epic die je wilt selecteren: ");
             int index = scanner.nextInt();
