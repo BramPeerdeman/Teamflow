@@ -116,23 +116,27 @@ public class TaskMenu extends Menu {
 
     private void listTaken() {
         UserStory currentUserStory = userStoryController.getCurrentUserStory();
+
         if (currentUserStory == null) {
             System.out.println("Geen User Story geselecteerd.");
             return;
         }
 
         ArrayList<Task> taken = currentUserStory.gettaskList();
+
         if (taken.isEmpty()) {
-            System.out.println("leeg");
-        } else {
-            System.out.printf("taken %s:", userStoryController.getCurrentUserStory());
-            for (int i = 0; i < taken.size(); i++) {
-                Task task = taken.get(i);
-                System.out.printf("%d. %s%n", 1 + i, task.getTitle());
-            }
+            System.out.println("Deze User Story heeft geen taken.");
+            return;
+        }
+
+        System.out.printf("Taken van '%s':%n", currentUserStory.getTitel());
+        for (int i = 0; i < taken.size(); i++) {
+            Task task = taken.get(i);
+            System.out.printf("%d. %s%n", i + 1, task.getTitle());
         }
         System.out.println();
     }
+
 
 
     public void selectUserStory() {
@@ -190,7 +194,7 @@ public class TaskMenu extends Menu {
 
         System.out.println("Taken in '" + currentUserStory.getTitel() + "':");
         for (int i = 0; i < taken.size(); i++) {
-            System.out.printf("%d. %s%n", i, taken.get(i).getTitle());
+            System.out.printf("%d. %s - %s%n", i, taken.get(i).getTitle(), taken.get(i).getContent());
         }
 
         System.out.print("Kies het nummer van de taak die je wilt verwijderen: ");
