@@ -8,6 +8,6 @@ public class TeamflowApp
 
     {
         CLIHandler cliHandler = new CLIHandler();
-        cliHandler.StartUp();
+        cliHandler.start();
     }
 }
