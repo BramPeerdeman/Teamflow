@@ -5,60 +5,49 @@ import org.teamflow.models.User;
 import org.teamflow.storage.StorageManager;
 
 import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 public class MessageController {
-    private Message currentMessage;
     private ArrayList<Message> messages;
     private StorageManager storageManager;
-    private User user;
 
-    public MessageController(User user) {
-        storageManager = new StorageManager();
-        messages = storageManager.loadMessages();
-        this.user = user;
+    public MessageController() {
+        this.storageManager = new StorageManager();
+        this.messages = storageManager.loadMessages();
     }
 
-    public boolean createMessage(String content, User user) {
-        if (getMessageByContent(content) != null) return false;
-        int nextId = generateNextMessageId();
-        Message message = new Message(content, user, nextId);
-        messages.add(message);
+    public boolean createMessage(String inhoud, User afzender, Integer epicId, Integer userStoryId, Integer taskId, boolean pinned) {
+        int newId = messages.stream().mapToInt(Message::getId).max().orElse(0) + 1;
+        Message msg = new Message(inhoud, afzender, newId, epicId, userStoryId, taskId, pinned);
+        msg.setPinned(pinned);
+        messages.add(msg);
         storageManager.saveMessages(messages);
-        currentMessage = message;
         return true;
     }
 
-    private int generateNextMessageId() {
-        int maxId = 0;
-        for (Message message : messages) {
-            if (message.getId() > maxId) {
-                maxId = message.getId();
-            }
-        }
-        return maxId + 1;
+    public ArrayList<Message> getMessagesForEpic(int epicId) {
+        return filterMessages(msg -> msg.getEpicId() != null && msg.getEpicId() == epicId);
     }
 
-    private Message getMessageByContent(String content) {
-        for (Message message : messages) {
-            if (message.getInhoud().equalsIgnoreCase(content)) {
-                return message;
-            }
-        }
-        return null;
+    public ArrayList<Message> getMessagesForUserStory(int storyId) {
+        return filterMessages(msg -> msg.getUserStoryId() != null && msg.getUserStoryId() == storyId);
     }
 
-    public Message getCurrentMessage() {
-        return currentMessage;
+    public ArrayList<Message> getMessagesForTask(int taskId) {
+        return filterMessages(msg -> msg.getTaskId() != null && msg.getTaskId() == taskId);
     }
 
-    public String getCurrentMessageContent() {
-        return currentMessage != null ? currentMessage.getInhoud() : null;
+    private ArrayList<Message> filterMessages(java.util.function.Predicate<Message> predicate) {
+        return messages.stream()
+                .filter(predicate)
+                .sorted((a, b) -> {
+                    // Pinned messages first
+                    if (a.isPinned() && !b.isPinned()) return -1;
+                    if (!a.isPinned() && b.isPinned()) return 1;
+                    // Otherwise, sort by timestamp
+                    return a.getTimestamp().compareTo(b.getTimestamp());
+                })
+                .collect(Collectors.toCollection(ArrayList::new));
     }
 
-    public ArrayList<Message> getMessages() {
-        return messages;
-    }
 }
-
-
-

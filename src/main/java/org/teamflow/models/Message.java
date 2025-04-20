@@ -1,41 +1,40 @@
 package org.teamflow.models;
 
+import java.time.LocalDateTime;
+
 public class Message {
+    private int id;
     private String inhoud;
     private User afzender;
-    private int id;
+    private LocalDateTime timestamp;
+    private Integer epicId;
+    private Integer userStoryId;
+    private Integer taskId;
+    private boolean pinned = false;
 
-    public Message (String inhoud, User afzender, int id) {
+    public Message(String inhoud, User afzender, int id, Integer epicId, Integer userStoryId, Integer taskId, boolean pinned) {
+        this.id = id;
         this.inhoud = inhoud;
         this.afzender = afzender;
-        this.id = id;
+        this.timestamp = LocalDateTime.now();
+        this.epicId = epicId;
+        this.userStoryId = userStoryId;
+        this.taskId = taskId;
+        this.pinned = pinned;
     }
 
-    public void setInhoud(String inhoud) {
-        this.inhoud = inhoud;
-    }
 
-    public void setAfzender(User afzender) {
-        this.afzender = afzender;
+    public boolean isPinned() {
+        return pinned;
     }
-
-    public String getInhoud() {
-        return inhoud;
+    public void setPinned(boolean pinned) {
+        this.pinned = pinned;
     }
-
-    public User getAfzender() {
-        return afzender;
-    }
-
-    public void toonBericht() {
-        System.out.printf("%s%n -%s", inhoud, afzender.getName());
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public int getId() {
-        return id;
-    }
+    public int getId() { return id; }
+    public String getInhoud() { return inhoud; }
+    public User getAfzender() { return afzender; }
+    public LocalDateTime getTimestamp() { return timestamp; }
+    public Integer getEpicId() { return epicId; }
+    public Integer getUserStoryId() { return userStoryId; }
+    public Integer getTaskId() { return taskId; }
 }

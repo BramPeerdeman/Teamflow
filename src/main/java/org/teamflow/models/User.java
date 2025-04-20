@@ -44,4 +44,9 @@ public class User
     {
         this.isScrumMaster = isScrumMaster;
     }
+
+    public boolean isScrumMaster() {
+        return this.isScrumMaster;
+    }
+
 }

@@ -27,7 +27,7 @@ public class CLIHandler {
         epicController = EpicController.getInstance();
         userStoryController = UserStoryController.getInstance();
         taskController = new TaskController();
-        messageController = new MessageController(userController.getCurrentUser());
+        messageController = new MessageController();
 
         startupMenu = new StartupMenu(this);
         mainMenu = new MainMenu(this);
