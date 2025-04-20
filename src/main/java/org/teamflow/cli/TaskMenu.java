@@ -33,7 +33,8 @@ public class TaskMenu extends Menu {
             System.out.println("1. Voeg Taak toe");
             System.out.println("2. Laat Taken zien");
             System.out.println("3. Selecteer User Story");
-            System.out.println("4. Terug naar main menu");
+            System.out.println("4. Verwijder Taak");
+            System.out.println("5. Terug naar main menu");
             System.out.print("> ");
 
             String choice = scanner.nextLine().trim();
@@ -48,6 +49,9 @@ public class TaskMenu extends Menu {
                     selectUserStory();
                     break;
                 case "4":
+                    verwijderTaak();
+                    break;
+                case "5":
                     cliHandler.getMainMenu().displayMenu();
                     break;
                 default:
@@ -133,30 +137,79 @@ public class TaskMenu extends Menu {
 
     public void selectUserStory() {
         clearConsole();
+
+        Epic currentEpic = epicController.getCurrentEpic();
+        if (currentEpic == null) {
+            System.out.println("Je moet eerst een Epic selecteren.");
+            return;
+        }
+
+        ArrayList<UserStory> userStories = currentEpic.getUserStories();
+
+        if (userStories.isEmpty()) {
+            System.out.println("Geen User Stories beschikbaar in deze Epic.");
+            return;
+        }
+
         while (cliHandler.isRunning()) {
-            System.out.println("Beschikbare User Stories:");
-            for (int i = 0; i < userStoryController.getUserStories().size(); i++) {
-                System.out.println(i + ": " + userStoryController.getUserStories().get(i).getTitel());
+            System.out.println("Beschikbare User Stories in Epic '" + currentEpic.getTitel() + "':");
+            for (int i = 0; i < userStories.size(); i++) {
+                System.out.println(i + ": " + userStories.get(i).getTitel());
             }
-            System.out.printf("%d: Ga terug%n", userStoryController.getUserStories().size());
+            System.out.printf("%d: Ga terug%n", userStories.size());
 
             System.out.print("Druk de nummer van de User Story die je wilt selecteren: ");
             int index = scanner.nextInt();
             scanner.nextLine();
 
-            if (index >= 0 && index < userStoryController.getUserStories().size()) {
-                UserStory selectedUserStory = userStoryController.getUserStories().get(index);
+            if (index >= 0 && index < userStories.size()) {
+                UserStory selectedUserStory = userStories.get(index);
                 userStoryController.setCurrentUserStory(selectedUserStory);
                 System.out.println("Geselecteerde User Story: " + selectedUserStory.getTitel());
                 break;
-            } else if (index == userStoryController.getUserStories().size()) {
-                cliHandler.getMainMenu().displayMenu();
+            } else if (index == userStories.size()) {
                 break;
             } else {
                 System.out.println("Invalide nummer. Probeer opnieuw.");
             }
         }
     }
+    private void verwijderTaak() {
+        UserStory currentUserStory = userStoryController.getCurrentUserStory();
+        if (currentUserStory == null) {
+            System.out.println("Geen User Story geselecteerd.");
+            return;
+        }
+
+        ArrayList<Task> taken = currentUserStory.gettaskList();
+
+        if (taken.isEmpty()) {
+            System.out.println("Geen taken beschikbaar om te verwijderen.");
+            return;
+        }
+
+        System.out.println("Taken in '" + currentUserStory.getTitel() + "':");
+        for (int i = 0; i < taken.size(); i++) {
+            System.out.printf("%d. %s%n", i, taken.get(i).getTitle());
+        }
+
+        System.out.print("Kies het nummer van de taak die je wilt verwijderen: ");
+        int index = scanner.nextInt();
+        scanner.nextLine();
+
+        if (index >= 0 && index < taken.size()) {
+            Task verwijderTaak = taken.get(index);
+            taken.remove(index);
+            userStoryController.saveUserStories();
+            System.out.println("Taak '" + verwijderTaak.getTitle() + "' is verwijderd.");
+        } else {
+            System.out.println("Ongeldige keuze.");
+        }
+
+        System.out.println("\nDruk ENTER om verder te gaan.");
+        scanner.nextLine();
+    }
+
 }
 
 

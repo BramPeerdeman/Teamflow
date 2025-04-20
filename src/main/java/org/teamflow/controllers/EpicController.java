@@ -73,14 +73,19 @@ public class EpicController {
     }
 
     public ArrayList<Epic> getEpics() {
-        return storageManager.loadEpics();
+        return epics;
     }
 
     public void setCurrentEpic(Epic currentEpic) {
         this.currentEpic = currentEpic;
     }
 
-    public void removeCurrentEpic() {
-        storageManager.loadEpics().remove(currentEpic);
+    public void deleteEpic(Epic epic) {
+        epics.remove(epic);
+        if (currentEpic != null && currentEpic.equals(epic)) {
+            currentEpic = null;
+        }
+        storageManager.saveEpics(epics);
     }
+
 }

@@ -74,10 +74,16 @@ public class UserStoryController {
     }
 
     public ArrayList<UserStory> getUserStories() {
-        return storageManager.loadUserStories();
+        return userStories;
     }
 
     public void setCurrentUserStory(UserStory currentUserStory) {
         this.currentUserStory = currentUserStory;
     }
+
+    public void deleteUserStory(UserStory userStory) {
+        userStories.remove(userStory);
+        storageManager.saveUserStories(userStories);
+    }
+
 }
