@@ -1,5 +1,6 @@
 package org.teamflow.controllers;
 
+import org.teamflow.models.Epic;
 import org.teamflow.models.Task;
 import org.teamflow.models.UserStory;
 import org.teamflow.storage.StorageManager;
@@ -74,5 +75,9 @@ public class UserStoryController {
 
     public ArrayList<UserStory> getUserStories() {
         return storageManager.loadUserStories();
+    }
+
+    public void setCurrentUserStory(UserStory currentUserStory) {
+        this.currentUserStory = currentUserStory;
     }
 }

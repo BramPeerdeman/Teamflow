@@ -12,17 +12,15 @@ public class MessageController {
     private StorageManager storageManager;
     private User user;
 
-    public MessageController(User user)
-    {
+    public MessageController(User user) {
         storageManager = new StorageManager();
         messages = storageManager.loadMessages();
         this.user = user;
     }
 
-    public boolean createMessage(String content)
-    {
+    public boolean createMessage(String content, User user) {
         if (getMessageByContent(content) != null) return false;
-        int nextId = generateNextEpicId();
+        int nextId = generateNextMessageId();
         Message message = new Message(content, user, nextId);
         messages.add(message);
         storageManager.saveMessages(messages);
@@ -30,24 +28,19 @@ public class MessageController {
         return true;
     }
 
-    private int generateNextEpicId()
-    {
+    private int generateNextMessageId() {
         int maxId = 0;
-        for (Message message : messages)
-        {
-            if (message.getId() > maxId)
-            {
+        for (Message message : messages) {
+            if (message.getId() > maxId) {
                 maxId = message.getId();
             }
         }
         return maxId + 1;
     }
 
-    private Message getMessageByContent(String content)
-    {
+    private Message getMessageByContent(String content) {
         for (Message message : messages) {
-            if (message.getInhoud().equalsIgnoreCase(content))
-            {
+            if (message.getInhoud().equalsIgnoreCase(content)) {
                 return message;
             }
         }
@@ -61,4 +54,11 @@ public class MessageController {
     public String getCurrentMessageContent() {
         return currentMessage != null ? currentMessage.getInhoud() : null;
     }
+
+    public ArrayList<Message> getMessages() {
+        return messages;
+    }
 }
+
+
+
