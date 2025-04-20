@@ -115,17 +115,27 @@ public class UserStoryMenu extends Menu {
     }
 
     private void listUserStories() {
-        if (userStoryController.getUserStories().isEmpty()) {
-            System.out.println("leeg");
-        } else {
-            System.out.println("user stories:");
-            for (int i = 0; i < userStoryController.getUserStories().size(); i++) {
-                UserStory userStory = userStoryController.getUserStories().get(i);
-                System.out.printf("%d. %s%n", 1 + i, userStory.getTitel());
-            }
+        Epic currentEpic = epicController.getCurrentEpic();
+
+        if (currentEpic == null) {
+            System.out.println("Geen Epic geselecteerd. Selecteer eerst een Epic.");
+            return;
+        }
+
+        ArrayList<UserStory> stories = currentEpic.getUserStories();
+
+        if (stories.isEmpty()) {
+            System.out.println("Deze Epic heeft geen User Stories.");
+            return;
+        }
+
+        System.out.println("User Stories van '" + currentEpic.getTitel() + "':");
+        for (int i = 0; i < stories.size(); i++) {
+            System.out.printf("%d. %s%n", i + 1, stories.get(i).getTitel());
         }
         System.out.println();
     }
+
 
     public void selectEpic() {
         clearConsole();
