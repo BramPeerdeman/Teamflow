@@ -16,6 +16,9 @@ public class EpicController {
     private EpicController() {
         storageManager = new StorageManager();
         epics = storageManager.loadEpics();
+        if (epics == null) {
+            epics = new ArrayList<>();
+        }
     }
 
     public static EpicController getInstance() {

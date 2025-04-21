@@ -1,24 +1,29 @@
 package org.teamflow.utils;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Type;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 import org.teamflow.models.*;
 
 public class JSONHelper
 {
-    private static final String FILE_PATH = "users.json";
-    private static final String FILE_PATH2 = "tasks.json";
-    private static final String FILE_PATH3 = "epics.json";
-    private static final String FILE_PATH4 = "messages.json";
-    private static final String FILE_PATH5 = "userstories.json";
-    private static final Gson gson = new Gson();
+    private static final String FILE_PATH = "data/users.json";
+    private static final String FILE_PATH2 = "data/tasks.json";
+    private static final String FILE_PATH3 = "data/epics.json";
+    private static final String FILE_PATH4 = "data/messages.json";
+    private static final String FILE_PATH5 = "data/userstories.json";
+    private static final Gson gson = new GsonBuilder()
+            .setPrettyPrinting()
+            .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
+            .create();
 
     public static ArrayList<User> loadUsers()
     {
@@ -90,29 +95,6 @@ public class JSONHelper
         }
     }
 
-    public static ArrayList<Message> loadMessages()
-    {
-        try (FileReader reader = new FileReader(FILE_PATH4))
-        {
-            Type listType = new TypeToken<ArrayList<Message>>() {}.getType();
-            return gson.fromJson(reader, listType);
-        } catch (IOException e)
-        {
-            return new ArrayList<>();
-        }
-    }
-
-    public static void saveMessages(ArrayList<Message> messages)
-    {
-        try (FileWriter writer = new FileWriter(FILE_PATH4))
-        {
-            gson.toJson(messages, writer);
-        } catch (IOException e)
-        {
-            System.out.println("Fout bij het opslaan van messages: " + e.getMessage());
-        }
-    }
-
     public static ArrayList<UserStory> loadUserStories()
     {
         try (FileReader reader = new FileReader(FILE_PATH5))
@@ -133,6 +115,24 @@ public class JSONHelper
         } catch (IOException e)
         {
             System.out.println("Fout bij het opslaan van userstories: " + e.getMessage());
+        }
+    }
+
+    public static ArrayList<Message> loadMessages() {
+        try (FileReader reader = new FileReader(FILE_PATH4)) {
+            Type listType = new TypeToken<ArrayList<Message>>() {}.getType();
+            ArrayList<Message> messages = gson.fromJson(reader, listType);
+            return messages != null ? messages : new ArrayList<>();
+        } catch (IOException e) {
+            return new ArrayList<>();
+        }
+    }
+
+    public static void saveMessages(ArrayList<Message> messages) {
+        try (FileWriter writer = new FileWriter(FILE_PATH4)) {
+            gson.toJson(messages, writer);
+        } catch (IOException e) {
+            System.out.println("Fout bij opslaan van berichten: " + e.getMessage());
         }
     }
 }
