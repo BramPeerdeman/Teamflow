@@ -132,7 +132,7 @@ public class TaskMenu extends Menu {
         System.out.printf("Taken van '%s':%n", currentUserStory.getTitel());
         for (int i = 0; i < taken.size(); i++) {
             Task task = taken.get(i);
-            System.out.printf("%d. %s%n", i + 1, task.getTitle());
+            System.out.printf("%d. %s - %s%n", i + 1, task.getTitle(), task.getContent());
         }
         System.out.println();
     }
