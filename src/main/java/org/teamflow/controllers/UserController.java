@@ -15,6 +15,9 @@ public class UserController {
     {
         storageManager = new StorageManager();
         users = storageManager.loadUsers();
+        if (users == null) {
+            users = new ArrayList<>();
+        }
     }
 
     public boolean createUser(String name)

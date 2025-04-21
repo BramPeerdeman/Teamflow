@@ -17,6 +17,9 @@ public class UserStoryController {
     private UserStoryController() {
         storageManager = new StorageManager();
         userStories = storageManager.loadUserStories();
+        if (userStories == null) {
+            userStories = new ArrayList<>();
+        }
     }
 
     public static UserStoryController getInstance() {

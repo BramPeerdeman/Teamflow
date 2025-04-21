@@ -12,6 +12,9 @@ public class TaskController {
     public TaskController() {
         storageManager = new StorageManager();
         tasks = storageManager.loadTasks();
+        if (tasks == null) {
+            tasks = new ArrayList<>();
+        }
     }
 
     public ArrayList<Task> getTasks() {

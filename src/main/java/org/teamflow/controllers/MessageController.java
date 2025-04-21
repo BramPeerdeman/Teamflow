@@ -14,6 +14,9 @@ public class MessageController {
     public MessageController() {
         this.storageManager = new StorageManager();
         this.messages = storageManager.loadMessages();
+        if (messages == null) {
+            messages = new ArrayList<>();
+        }
     }
 
     public boolean createMessage(String inhoud, User afzender, Integer epicId, Integer userStoryId, Integer taskId, boolean pinned) {
