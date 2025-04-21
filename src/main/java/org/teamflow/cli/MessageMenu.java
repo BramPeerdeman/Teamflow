@@ -92,17 +92,32 @@ public class MessageMenu extends Menu {
 
         switch (keuze) {
             case "1" -> {
-                showEpics();
+                if (epicController.getEpics().isEmpty()) {
+                    System.out.println("Geen beschikbare Epics.");
+                    break;
+                } else {
+                    showEpics();
+                }
                 System.out.print("Epic ID: ");
                 toon(messageController.getMessagesForEpic(Integer.parseInt(scanner.nextLine())));
             }
             case "2" -> {
-                showUserStories();
+                if (userStoryController.getUserStories().isEmpty()) {
+                    System.out.println("Geen beschikbare User Stories.");
+                    break;
+                } else {
+                    showUserStories();
+                }
                 System.out.print("User Story ID: ");
                 toon(messageController.getMessagesForUserStory(Integer.parseInt(scanner.nextLine())));
             }
             case "3" -> {
-                showTasks();
+                if (taskController.getTasks().isEmpty()) {
+                    System.out.println("Geen beschikbare Tasks.");
+                    break;
+                } else {
+                    showTasks();
+                }
                 System.out.print("Task ID: ");
                 toon(messageController.getMessagesForTask(Integer.parseInt(scanner.nextLine())));
             }
@@ -147,4 +162,5 @@ public class MessageMenu extends Menu {
             System.out.printf("ID: %d - %s%n", t.getId(), t.getTitle());
         }
     }
+
 }
